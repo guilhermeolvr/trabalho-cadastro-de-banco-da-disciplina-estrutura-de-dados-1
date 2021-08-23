@@ -1,234 +1,149 @@
-#include <conio.h>
-using namespace std;
-#include <iostream>
-#include <stdio.h>
-#include <stdlib.h>
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include<time.h>
+#include<conio.h>
 #include <locale.h>
-#include <windows.h>
-#include <fstream>
-#include <time.h>
 
- main()
-{
-FILE *registrosdobanco,*movimento,*consultadesaldo; //nome do arquivo
-
-struct dataabertura{
-    int ano;
-    short mes;
-    short dia;
-} dataabertura;
-
-struct datavencimento{
-    int ano;
-    short mes;
-    short dia;
-} datavencimento;
-
-
-struct cadastro {     //dados do cliente
-    char numconta [500];
-    char nome [32];
-    struct dataabertura dataabert;
-    float limite;
-    struct datavencimento datavenc;
-    int tipoconta;
-}cadastro;
-  struct cadastro c; //transformando a struct 'cadastro' na variavel 'c'
-
-
-
- printf("\n---------- Cadastro de cliente -----------\n\n\n");  //recebendo os valores do cadastro do cliente
-
-printf("digite o numero da conta:");
- fgets(c.numconta, 501, stdin);
-
-printf("digite o nome da pessoa:");
- fgets(c.nome, 33, stdin);
- 
-printf("digite a data de abertura da conta no formato: (dd/mm/aa):"); 
-scanf("%d%/c%d/c%d", &c.dataabert.dia, &c.dataabert.mes, &c.dataabert.ano);
- fflush(stdin);
-c.tipoconta==0;
-  
-   
-	 
-	 //recebendo o tipo de conta
-	 	 	 	
-printf("digite o tipo da conta (1 - simples ou 2 - especial):\n");
-scanf("%d", &c.tipoconta);
-
-
-switch
-(c.tipoconta)
-{
-
-case 1 :
-    printf("Conta cadastrada com sucesso\n");
-break;
-
-case 2 :
-printf("Digite o limite: ");
-scanf("%.2f",&c.limite);
-printf("Digite a data de vencimento: ");
-scanf("%d%/%d/%d", &c.datavenc.dia, &c.datavenc.mes, &c.datavenc.ano);
-break;
- 
-default:-
-printf("O numero digitado nao condiz as especificacoes solicitadas ");
-break;
-}
- 
-
-
-  registrosdobanco = fopen("registrosdobanco.txt", "w"); //abertura do aqruivo 
-  
-  
-  
-  if (registrosdobanco == NULL)
-     printf("\nErro na Abertura do arquivo");
-     //cout<< "\nErro na abertura do arquivo";
-  else
-      { fwrite(&c, sizeof(struct cadastro), 1, registrosdobanco); }//escrevendo os dados do cadastro do arquivo
-        if (ferror(registrosdobanco))
-           printf("\nErro na escrita do arquivo");
-           //cout <<"\nErro na escrita do arquivo ";
-
-
-
-
-
-
-
-
-
-
-
-// b) escreva um subprograma que gere o arquivo movimento referente a um determinado dia;
-
-movimento==0;
-
-struct datamovimento{
-    int ano;
-    short mes;
-    short dia;
-} datamovimento;
-
-struct movimentodia {     //dados do cliente
-    struct datamovimento data;
-	int tipodeoperacao;
-    float valor;
-	float saldo;       
-} movimentodia;
- struct movimentodia m;
-
-float saque,deposito;
-
-printf("\n---------- Movimento do dia -----------\n\n\n");  //recebendo os valores do cadastro do cliente
-
-printf("digite a data do movimento no formato: (dd/mm/aa):");
- fflush(stdin);
- scanf("%d%/%d/%d", &m.data.dia, &m.data.mes, &m.data.ano);
-
-
-printf("digite o tipo de operação 1-Deposito 2-Saque :");
- fflush(stdin);
- scanf("%d", &m.tipodeoperacao);
- 
-printf("Digite o saldo: ");
-scanf("%.2f",&m.saldo);
-
-
- 
-switch
-(m.tipodeoperacao)
-{
-
-case 1 :
-    printf("digite o valor do deposito\n");
-    scanf("%.2f",&deposito);
-    m.saldo += deposito;
+ struct Cliente{
+    char nome[100];
+    int conta[5];
+    float saldo;
     
-break;
+  };
 
-case 2 :
-printf("Digite o valor do saque: ");
-scanf("%.2f",&saque);
-m.saldo -= saque;
-break;
- 
-default:
-printf("O numero digitado nao condiz as especificacoes solicitadas ");
-break;
-}
+ typedef Cliente cliente ;
 
-fread(&c, sizeof(struct cadastro), 1, registrosdobanco);
-movimento = fopen("movimentododia.txt", "a+");
+int movimento=0;
+int comparacoes=0;
 
+void insertionsort(cliente* c, int tam);
+void selectionsort (cliente* c, int tam);
+void menu(cliente* c, int tam);
+void imprime(cliente* c,int tam);
 
-
- if (movimento == NULL)
-     printf("\nErro na Abertura do arquivo");
-     //cout<< "\nErro na abertura do arquivo";
-  else
-      { fwrite(&m, sizeof(struct movimentodia), 1, movimento); //escrevendo os dados do movimento no arquivo
-        if (ferror(movimento))
-           printf("\nErro na Leitura do arquivo");
-           //cout <<"\nErro na leitura do arquivo ";
-        
-		   }
-		
-
-
-
-
-
- // c) desenvolva uma rotina que atualize o cadastro dos clientes a partir de um arquivo movimento e emita um relatório com o saldo atualizado de cada cliente segundo o intervalo informado; 
-  
-     fread(&m, sizeof(struct cadastro), 1, registrosdobanco);
-      fwrite(&m, sizeof(struct movimentodia), 1, movimento);
-	  
-  	movimento = fopen("movimentododia.txt", "a+");
-  	
-  	
-  
-  
-  
-  
-
-  
- //d) escreva uma rotina que liste todos os depósitos realizados na conta de um determinado cliente; 
-  
-  while (m.tipodeoperacao == 1)
-    
-   printf("deposito realizado no valo de :""%.2f" "em:""%s",deposito,m.data); 
-   fprintf(movimento,"deposito realizado no valo de :""%.2f" "em:""%s",deposito,m.data);
+ int main(){
    
+   cliente *vetor;
+   int nclientes,op;
+   float t;
    
-   while (m.tipodeoperacao >= 3 ) 
-   printf("a operacao realizada nao foi um deposito" );
-   
-   
-   
-   //e) construa uma rotina que atenda um número indeterminado de consultas de saldo - em cada consulta deverá ser fornecido um número da conta e deverá ser devolvido o saldo ou uma mensagem de conta inexistente.
 
-   char numcontaaserconsultado[500];
+   printf("Digite a quantidade de Clientes:");
+   scanf("%d",&nclientes);
    
-    consultadesaldo = fopen("consultadesaldo.txt", "w");
- 
-  printf("digite o numero da conta que o saldo vai ser consultado");
-  fgets(numcontaaserconsultado, 501, stdin);
+   vetor = (cliente*)malloc(nclientes*sizeof(cliente));
+
+   for(int i = 0; i<nclientes;i++){
+       printf("Digite um nome para o Cliente:\n");
+       fflush(stdin);
+       gets(vetor[i].nome);
+       
+       printf("Digite o numero da conta do cliente:\n");
+       scanf("%d",&vetor[i].conta);
+       printf("Digite o saldo do cliente:\n");
+       scanf("%f",&vetor[i].saldo);
+       printf("\n\n");
+   }
+
   
-  if (numcontaaserconsultado == c.numconta){
-  
-  	printf("o saldo na conta" "%s""e de" "%.2f",c.numconta,m.saldo);
-  	fprintf(consultadesaldo,"o saldo na conta" "%s" "e de" "%.2f",c.numconta,m.saldo);
+ do{
   
   
+  
+  printf("0 - Sair\n");
+  printf("1 - Ordenar clientes pelo Selection Sort \n");
+  printf("2 - Ordenar clientes pelo Insection Sort \n");
+  printf("3 - imprimir clientes digitados\n");
+  printf("Digite uma opcao: \n");
+  scanf("%i",&op);
+  
+  getchar();
+
+  switch (op){
+    case 0:
+     printf("Programa finalizado!");
+    break;
+    case 1:
+    t=clock();
+    selectionsort(vetor,nclientes);
+    imprime( vetor, nclientes);
+    t= clock()- t;
+    printf("tempo de execucao:%2.f\n",t);
+    printf("comparacoes entre os saldos no selectionsort:%i\n",comparacoes);
+    printf("movimentos entre os saldos no selectionsort:%i\n\n",movimento);
+    break;
+    case 2:
+    t=clock();
+    insertionsort(vetor,nclientes);
+    imprime( vetor, nclientes);
+    t= clock()- t;
+    printf("tempo de execucao:%2.f\n",t);
+    printf("comparacoes entre os saldos no inserctionsort:%i\n",comparacoes);
+    printf("movimentos entre os saldos inserctionsort:%i\n\n",movimento);
+    break;
+    case 3:
+    imprime(vetor, nclientes);
+    break;
   }
-    else {
-   	printf(" a conta nao existe");
-    }
-    
-getch();
+  
+  
+  }while(op!=0);
+
+
+   return 1;
+ }
+
+
+
+void insertionsort(cliente* c, int tam){
+	int i,j;
+  cliente aux;
+	for (i= 1; i<tam; i++){
+		aux = c[i];
+		for( j=i; j>0 && aux.saldo <c[j-1].saldo; j--) movimento++;
+		c[j]= c [j-1];comparacoes ++;
+		c[j]=aux;
+	}
+  
 }
 
+
+void selectionsort (cliente* c, int tam){
+     int i, j, menor;
+     cliente troca;
+     for(i=0; i < tam-1; i++){
+          menor = i;
+          
+          for(j= i + 1; j< tam; j++){
+               if(c[j].saldo< c[menor].saldo)
+               menor = j;
+               comparacoes++;
+          }
+          if (i != menor){
+               troca = c[i];
+               c[i]=c[menor];
+               c[menor]= troca;
+               movimento++;
+          }
+     }
+
+
+}
+
+
+
+void imprime(cliente* c, int tam){ //imprime os clientes digitados sem estar na ordem
+	
+	int i;
+	
+	printf("\n--------------Ordem Atual de Clientes:--------------\n\n");
+	
+	for(i = 0; i < tam; i++)
+	{	
+		printf("Nome: %s Numero da Conta: %d\nSaldo:R$%.2f\n\n",c[i].nome,c[i].conta,c[i].saldo);
+		
+	}
+	
+
+}
